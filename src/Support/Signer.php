@@ -54,33 +54,30 @@ class Signer
 
         $algorithm = self::getKeyAlgorithm($config->get('private_key'));
 
-        if ($algorithm === 'Ed25519') {
-            $keyRaw = Base64Url::decode($config->get('private_key'));
-
-            $jwk = JWKFactory::createFromValues(
-                [
-                    "kty" => "OKP",
-                    "crv" => "Ed25519",
-                    // seed
-                    "d"   => Base64Url::encode(substr($keyRaw, 0, 32)),
-                    // public
-                    "x"   => Base64Url::encode(substr($keyRaw, 32)),
-                ]
-            );
-
-            $jws = Build::jws();
-
-            foreach ($token as $key => $value) {
-                $jws = $jws->claim($key, $value);
-            }
-
-            // ed25519
-            $jwt = (string)$jws->alg('EdDSA')->sign($jwk);
-        } else {
-            $jwt = JWT::encode($token, $config->get('private_key'), $algorithm);
+        if ($algorithm !== 'Ed25519') {
+            return JWT::encode($token, $config->get('private_key'), $algorithm);
         }
 
-        return $jwt;
+        $keyRaw = Base64Url::decode($config->get('private_key'));
+
+        $jwk = JWKFactory::createFromValues(
+            [
+                "kty" => "OKP",
+                "crv" => "Ed25519",
+                // seed
+                "d"   => Base64Url::encode(substr($keyRaw, 0, 32)),
+                // public
+                "x"   => Base64Url::encode(substr($keyRaw, 32)),
+            ]
+        );
+
+        $jws = Build::jws();
+
+        foreach ($token as $key => $value) {
+            $jws = $jws->claim($key, $value);
+        }
+
+       return (string)$jws->alg('EdDSA')->sign($jwk);
     }
 
     /**
