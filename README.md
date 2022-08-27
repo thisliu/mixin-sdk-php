@@ -1,7 +1,6 @@
 <h1 align="center"> mixin </h1>
 
-<p align="center"> .</p>
-
+<p align="center"> 🔥🔥🔥🔥火热开发中🔥🔥🔥🔥 </p>
 
 ## Installing
 
