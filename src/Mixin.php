@@ -10,7 +10,7 @@ class Mixin extends Client
     /**
      * @throws \Thisliu\Mixin\Exceptions\InvalidArgumentException
      */
-    public function __construct(protected array|Config $config, string $type)
+    public function __construct(protected array|Config $config, string $type = Signer::TYPE_PRIVATE)
     {
         Signer::verifyType($type);
 
