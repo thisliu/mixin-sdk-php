@@ -1,6 +1,6 @@
 <?php
 
-namespace Thisliu\Mixin\Transaction;
+namespace Thisliu\Mixin\Support\Transaction;
 
 use Thisliu\Mixin\Traits\TransactionHelper;
 
@@ -10,7 +10,7 @@ class SignedTransaction extends Transaction
 
     public $signatures;
 
-    public function __construct(public  Transaction $transaction)
+    public function __construct(public Transaction $transaction)
     {
         $this->version     = $transaction->version;
         $this->asset       = $transaction->asset;

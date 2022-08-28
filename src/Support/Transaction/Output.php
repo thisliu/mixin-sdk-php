@@ -1,6 +1,6 @@
 <?php
 
-namespace Thisliu\Mixin\Transaction;
+namespace Thisliu\Mixin\Support\Transaction;
 
 use Thisliu\Mixin\Traits\TransactionHelper;
 
@@ -22,7 +22,8 @@ class Output
      */
     public function encode(): string
     {
-        $ret = $this->encodeMapLen(5);  // 一共有5个字段, 对应的Withdrawal 被msgpack标记为不传递
+        // 一共有5个字段, 对应的 Withdrawal 被 msgpack 标记为不传递
+        $ret = $this->encodeMapLen(5);
         $ret .= $this->encodeString('Type').$this->encodeInt($this->type);
         $ret .= $this->encodeString('Amount').$this->encodeExt($this->amount);
         $ret .= $this->encodeString('Keys').$this->encodeArray($this->keys);

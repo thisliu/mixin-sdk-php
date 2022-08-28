@@ -1,6 +1,6 @@
 <?php
 
-namespace Thisliu\Mixin\Transaction;
+namespace Thisliu\Mixin\Support\Transaction;
 
 use Thisliu\Mixin\Exceptions\InvalidArgumentException;
 use Thisliu\Mixin\Exceptions\VersionException;

@@ -7,13 +7,14 @@ use Firebase\JWT\JWT;
 use Jose\Component\KeyManagement\JWKFactory;
 use Jose\Easy\Build;
 use phpseclib\Crypt\RSA;
+use Psr\Http\Message\RequestInterface;
 use Ramsey\Uuid\Uuid;
 use Thisliu\Mixin\Config;
 use Thisliu\Mixin\Exceptions\InvalidArgumentException;
 use Thisliu\Mixin\Exceptions\LoadPrivateKeyException;
-use Thisliu\Mixin\Transaction\Input;
-use Thisliu\Mixin\Transaction\Output;
-use Thisliu\Mixin\Transaction\Transaction;
+use Thisliu\Mixin\Support\Transaction\Input;
+use Thisliu\Mixin\Support\Transaction\Output;
+use Thisliu\Mixin\Support\Transaction\Transaction;
 
 class Signer
 {
@@ -26,11 +27,11 @@ class Signer
      * @throws \SodiumException
      * @throws \Thisliu\Mixin\Exceptions\InvalidArgumentException
      */
-    public static function build(string $type, Config $config): string
+    public static function build(RequestInterface $request, string $type, Config $config): string
     {
         return match ($type) {
             // 访问私有 API 的 JWT 签名
-            self::TYPE_PRIVATE => self::buildPrivateJwt($config),
+            self::TYPE_PRIVATE => self::buildPrivateJwt($request, $config),
             // OAuth 用户访问 API 的 JWT 签名
             self::TYPE_OAUTH => self::buildOauthJwt($config),
             // 转帐，提现，创建地址需要的 pin 签名
@@ -40,16 +41,16 @@ class Signer
     }
 
     // $method, $uri, $body, $expire = 200, $scope = 'FULL'
-    public static function buildPrivateJwt(Config $config): string
+    public static function buildPrivateJwt(RequestInterface $request, Config $config): string
     {
         $token = [
             "uid" => $config->get('client_id'),
             "sid" => $config->get('session_id'),
             "iat" => time(),
-            "exp" => time() + $expire,
+            "exp" => time() + $config->get('expires'),
             "jti" => Uuid::uuid4()->toString(),
-            "sig" => bin2hex(hash('sha256', $method.$uri.$body, true)),
-            'scp' => $scope,
+            "sig" => bin2hex(hash('sha256', $request->getMethod().$request->getUri().$request->getBody(), true)),
+            'scp' => $config->get('scope'),
         ];
 
         $algorithm = self::getKeyAlgorithm($config->get('private_key'));
@@ -232,5 +233,17 @@ class Signer
             'outputs' => $outputs,
             'extra'   => bin2hex($memo),
         ]);
+    }
+
+    /**
+     * @throws \Thisliu\Mixin\Exceptions\InvalidArgumentException
+     */
+    public static function verifyType(string $type): bool
+    {
+        if (!\in_array($type, [self::TYPE_PIN, self::TYPE_OAUTH, self::TYPE_PRIVATE])) {
+            throw new InvalidArgumentException('Invalid signature type!');
+        }
+
+        return true;
     }
 }

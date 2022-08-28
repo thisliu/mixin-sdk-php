@@ -2,6 +2,6 @@
 
 namespace Thisliu\Mixin\Services;
 
-class Message
+class Transaction
 {
 }

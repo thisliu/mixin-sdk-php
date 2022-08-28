@@ -8,19 +8,32 @@
 $ composer require thisliu/mixin -vvv
 ```
 
-## Usage
+## 配置
+```php
+$config = [
+    xxx
+];
+```
 
-TODO
+### 返回值
 
-## Contributing
+所有的接口调用都会返回 [`Thisliu\Mixin\Http\Response`](https://github.com/thisliu/mixin-sdk-php/blob/main/src/Http/Response.php) 对象，改对象提供了以下便捷方法：
 
-You can contribute in one of three ways:
+```php
+array|null $response->toArray(); // 获取响应内容数组转换结果                                                
+object $response->toObject(); // 获取对象格式的返回值
+bool $response->isXML(); // 检测返回内容是否为 XML
+string $response->getContents(); // 获取原始返回内容
+```
 
-1. File bug reports using the [issue tracker](https://github.com/thisliu/mixin/issues).
-2. Answer questions or fix bugs on the [issue tracker](https://github.com/thisliu/mixin/issues).
-3. Contribute new features or update the wiki.
+## 使用
+```php
+use Thisliu\Mixin\Mixin;
 
-_The code contribution process is not very formal. You just need to make sure that you follow the PSR-0, PSR-1, and PSR-2 coding guidelines. Any new code contributions must be accompanied by unit tests where applicable._
+$app = new Mixin($config);
+
+$response = $app->get('/me');
+```
 
 ## License
 

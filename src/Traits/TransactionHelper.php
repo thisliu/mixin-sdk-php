@@ -3,9 +3,9 @@
 namespace Thisliu\Mixin\Traits;
 
 use Thisliu\Mixin\Exceptions\TransactionException;
-use Thisliu\Mixin\Transaction\BigInteger;
-use Thisliu\Mixin\Transaction\Input;
-use Thisliu\Mixin\Transaction\Output;
+use Thisliu\Mixin\Support\Transaction\BigInteger;
+use Thisliu\Mixin\Support\Transaction\Input;
+use Thisliu\Mixin\Support\Transaction\Output;
 
 trait TransactionHelper
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Thisliu\Mixin\Transaction;
+namespace Thisliu\Mixin\Support\Transaction;
 
 class VersionedTransaction extends SignedTransaction
 {
@@ -8,6 +8,8 @@ class VersionedTransaction extends SignedTransaction
 
     public function __construct(public SignedTransaction $signedTransaction)
     {
+        parent::__construct($signedTransaction);
+
         $this->version = $signedTransaction->version;
         $this->asset = $signedTransaction->asset;
         $this->inputs = $signedTransaction->inputs;
